@@ -1,6 +1,7 @@
 {
   "name": "roadsos-root",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "start-all": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd server && npm start",

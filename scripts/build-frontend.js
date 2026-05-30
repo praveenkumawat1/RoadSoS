@@ -8,8 +8,18 @@ const distSrc = path.join(appDir, "dist");
 const distDest = path.join(cwd, "dist");
 
 try {
-  console.log("Installing frontend dependencies...");
-  execSync("npm ci", { cwd: appDir, stdio: "inherit" });
+  console.log("Installing frontend dependencies (attempting npm ci)...");
+  try {
+    execSync("npm ci", { cwd: appDir, stdio: "inherit" });
+  } catch (e) {
+    console.warn(
+      "npm ci failed (lockfile mismatch). Falling back to npm install...",
+    );
+    execSync("npm install --no-audit --no-fund", {
+      cwd: appDir,
+      stdio: "inherit",
+    });
+  }
 
   console.log("Building frontend (roadsos-app)...");
   execSync("npm run build", { cwd: appDir, stdio: "inherit" });
