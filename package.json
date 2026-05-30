@@ -1,0 +1,13 @@
+{
+  "name": "roadsos-root",
+  "version": "1.0.0",
+  "scripts": {
+    "start-all": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm start",
+    "client": "cd roadsos-app && npm run dev",
+    "install-all": "npm install concurrently -g && cd server && npm install && cd ../roadsos-app && npm install"
+  },
+  "dependencies": {
+    "concurrently": "^10.0.0"
+  }
+}
