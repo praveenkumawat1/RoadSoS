@@ -71,7 +71,12 @@ export default function FirstAidWindow({ open, onClose }) {
         formData.append("image", selectedImage);
       }
 
-      const res = await fetch("http://localhost:5000/api/rescue-ai/analyze", {
+      const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(
+        /\/$/,
+        "",
+      );
+      const url = `${API_BASE}/api/rescue-ai/analyze`;
+      const res = await fetch(url, {
         method: "POST",
         body: formData,
       });

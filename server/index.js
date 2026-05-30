@@ -13,7 +13,21 @@ import twilio from "twilio";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+const allowedOrigins = (
+  process.env.CLIENT_ORIGIN ||
+  process.env.CORS_ORIGIN ||
+  ""
+)
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin: allowedOrigins.length > 0 ? allowedOrigins : true,
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 // Twilio Client Setup
@@ -58,8 +72,9 @@ if (!fs.existsSync("uploads")) {
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: allowedOrigins.length > 0 ? allowedOrigins : true,
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
@@ -68,6 +83,14 @@ const alerts = [];
 
 app.get("/", (req, res) => {
   res.send("RoadSOS API is running...");
+});
+
+app.get("/api/health", (req, res) => {
+  res.json({
+    ok: true,
+    service: "roadsos-server",
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Get all active alerts

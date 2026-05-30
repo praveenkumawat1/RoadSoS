@@ -22,17 +22,28 @@ Next steps for you:
 3. In GitHub repo settings → Pages, ensure Pages is enabled for the repository (the Actions workflow will deploy automatically).
 4. For backend deployment, pick a host and configure environment variables (TWILIO, OPENAI, GEMINI keys) and pull the image from GHCR.
 
-## Vercel deployment (root-based)
+## Vercel deployment (frontend only)
 
-If you prefer Vercel, this repository is now set up so Vercel can build from the repository root. Vercel will run `npm run build` at the root which does:
-
-- Installs and builds the frontend inside `roadsos-app`.
-- Copies the produced `roadsos-app/dist` into repository root `dist/`.
+Use Vercel for the frontend and a separate host for the backend. This is the cleanest setup for this project.
 
 Vercel settings to use:
 
-- Framework Preset: Other (or leave auto-detected)
+- Root Directory: `roadsos-app`
+- Framework Preset: Vite
 - Build Command: `npm run build`
 - Output Directory: `dist`
 
-Note: Backend (`server/`) is not deployed to Vercel; use Render/Fly/Railway or Docker for that.
+Backend deployment:
+
+- Deploy `server/` to Render, Fly.io, Railway, or a VPS using Docker.
+- Set `VITE_API_BASE_URL` in Vercel to the backend URL, for example `https://your-backend.onrender.com`.
+
+Environment files:
+
+- `server/.env.example` contains the backend keys and `CLIENT_ORIGIN`/`CORS_ORIGIN`.
+- `roadsos-app/.env.example` contains `VITE_API_BASE_URL` for the deployed backend URL.
+- For local development, copy those templates into real `.env` files and fill the values.
+
+Frontend code now reads `VITE_API_BASE_URL` for API/socket calls, so the deployed frontend will talk to the deployed backend instead of `localhost:5000`.
+
+If you want a single-host deployment, use Docker on a VPS. Vercel is not a good fit for the long-running Node backend and Socket.IO server.

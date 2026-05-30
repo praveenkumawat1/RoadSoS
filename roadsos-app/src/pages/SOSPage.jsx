@@ -23,8 +23,10 @@ import FirstAidWindow from "../components/FirstAidWindow";
 import { useAutoLocation } from "../utils/useAutoLocation";
 import { NearbyUtility } from "../utils/nearby";
 
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+
 // Initialize Socket.IO
-const socket = io("http://localhost:5000", {
+const socket = io(API_BASE || window.location.origin, {
   autoConnect: false,
   reconnectionAttempts: 5,
 });
@@ -81,7 +83,7 @@ export default function SOSPage() {
       broadcastMode === "sms" ? "/api/broadcast-sos" : "/api/broadcast-call";
 
     try {
-      const response = await fetch(`http://localhost:5000${endpoint}`, {
+      const response = await fetch(`${API_BASE}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
